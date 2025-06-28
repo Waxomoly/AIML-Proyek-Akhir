@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://fonts.googleapis.com/css2?family=Audiowide&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: sans-serif; }
+    .navbar { display: flex; align-items: center; background-color: #28a745; padding: 10px 20px; }
+    .logo { display: flex; align-items: center; line-height: 1; }
+    .logo span { color: white; font-family: 'Audiowide', sans-serif; font-size: 1.4rem; letter-spacing: 1px; margin-left: 8px; }
+    .logo img { height: 40px; width: auto; display: inline-block; }
+    @media (max-width: 400px) {
+      .navbar { padding: 8px 12px; }
+      .logo span { font-size: 1rem; margin-right: 6px; }
+      .logo img { height: 30px; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="logo">
+      <img src="{{ url_for('static', filename='images/logoMobil2.png') }}" alt="Logo Car" />
+      <span>kelompok 5</span>
+    </div>
+  </nav>
+</body>
+</html>

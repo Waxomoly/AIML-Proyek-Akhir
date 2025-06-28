@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prediksi Harga Mobil</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    html, body {
+      height: 100%;
+      width: 100%;
+      font-family: sans-serif;
+    }
+    .hero {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      overflow: hidden;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+    .hero-background {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+    .hero-background img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0;
+      transition: opacity 1s ease-in-out;
+    }
+    .hero-background img.active {
+      opacity: 1;
+    }
+    .hero-content {
+      width: 90%;
+      max-width: 800px;
+      padding: 1.5rem;
+      background-color: rgba(0, 0, 0, 0.5);
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    }
+    .hero h1 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+    .hero p {
+      font-size: 1.2rem;
+      margin-bottom: 2rem;
+    }
+    .btn {
+      background-color: #28a745;
+      padding: 12px 24px;
+      color: white;
+      font-size: 1rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .btn:hover {
+      background-color: #218838;
+    }
+    @media (max-width: 600px) {
+      .hero h1 { font-size: 1.5rem; }
+      .hero p { font-size: 0.95rem; }
+      .btn { padding: 10px 20px; font-size: 0.95rem; }
+      .hero-content { padding: 1rem; }
+    }
+  </style>
+</head>
+<body>
+  {% include 'layouts/navbar.html' %}
+  <div class="hero">
+    <div class="hero-background">
+      <img src="{{ url_for('static', filename='images/mobil1.jpg') }}" class="bg-image active" alt="Mobil">
+      <img src="{{ url_for('static', filename='images/foto4.jpg') }}" class="bg-image" alt="Mobil">
+      <img src="{{ url_for('static', filename='images/mobil2.jpg') }}" class="bg-image" alt="Mobil">
+      <img src="{{ url_for('static', filename='images/foto5.jpg') }}" class="bg-image" alt="Mobil">
+    </div>
+    <div class="hero-content">
+      <h1>Lagi Bingung Cari Harga Mobil yang Pas?</h1>
+      <p>Tenang, sekarang kamu bisa tahu perkiraan harga mobil favorit dengan cepat dan mudah.</p>
+      <a href="{{ url_for('form') }}" class="btn">Cek Harga Sekarang</a>
+    </div>
+  </div>
+  <script>
+    const slides = document.querySelectorAll('.hero-background img');
+    let current = 0;
+    setInterval(() => {
+      slides[current].classList.remove('active');
+      current = (current + 1) % slides.length;
+      slides[current].classList.add('active');
+    }, 5000);
+  </script>
+</body>
+</html>
+

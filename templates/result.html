@@ -17,39 +17,54 @@
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
 
+    .container {
+      padding: 20px;
+    }
+
     .result-container {
-      margin-top: 100px;
-      padding: 20px 15px;
+      margin-top: 60px;
+      padding: 30px 20px;
       background-color: white;
-      border-radius: 12px;
-      box-shadow: 0 0 15px rgba(24, 123, 205, 0.15);
+      border-radius: 15px;
+      box-shadow: 0 0 18px rgba(24, 123, 205, 0.2);
       width: 100%;
-      max-width: 520px;
+      max-width: 1000px;
     }
 
     .announcement-text {
       font-size: 1.6rem;
       font-weight: 600;
       color: #187bcd;
-      margin-bottom: 12px;
+      margin-bottom: 16px;
     }
 
     .highlight-price {
-      font-size: 2rem;
+      font-size: clamp(1.2rem, 5vw, 2.2rem);
       font-weight: bold;
       color: #187bcd;
-      white-space: nowrap;
       overflow-x: auto;
+      white-space: nowrap;
+      padding: 10px 0;
+      margin: 0 auto 10px;
+      max-width: 100%;
+    }
+
+    .highlight-price::-webkit-scrollbar {
+      height: 6px;
+    }
+
+    .highlight-price::-webkit-scrollbar-thumb {
+      background-color: #ccc;
+      border-radius: 10px;
     }
 
     .highlight-price span {
       display: inline-block;
-      min-width: 60px;
-      text-align: left;
+      min-width: 80px;
     }
 
     h2 {
-      font-size: 1.1rem;
+      font-size: 1.3rem;
       margin-bottom: 1rem;
     }
 
@@ -57,25 +72,23 @@
       background-color: #187bcd;
       border-color: #187bcd;
       color: white;
-      font-size: 0.85rem;
-      padding: 8px 18px;
-      transition: all 0.3s ease;
-      box-shadow: 0 3px 10px rgba(24, 123, 205, 0.2);
+      font-size: 0.9rem;
+      padding: 10px 20px;
       font-weight: 600;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(24, 123, 205, 0.3);
     }
 
     .btn-success:hover {
       background-image: linear-gradient(to right, #146aad, #1a8cff);
-      border-color: #1a8cff;
-      transform: translateY(-1px) scale(1.03);
-      box-shadow: 0 4px 14px rgba(24, 123, 205, 0.35);
-      color: white;
+      transform: scale(1.03);
+      box-shadow: 0 5px 16px rgba(24, 123, 205, 0.45);
     }
 
-    @media (max-width: 480px) {
+    @media (max-width: 576px) {
       .result-container {
-        padding: 15px 10px;
-        margin-top: 30px;
+        margin-top: 40px;
+        padding: 20px 12px;
       }
 
       .announcement-text {
@@ -83,16 +96,18 @@
       }
 
       .highlight-price {
-        font-size: 1.2rem;
+        font-size: 1rem;
       }
 
       h2 {
         font-size: 0.8rem;
       }
-
+      p {
+        font-size:0.1rem;
+      }
       .btn {
         font-size: 0.8rem;
-        padding: 7px 14px;
+        padding: 8px 8px;
       }
     }
   </style>
@@ -106,10 +121,10 @@
       <h2 data-aos="zoom-in" data-aos-delay="150">Perkiraan Harga Jual Mobil Anda</h2>
 
       {% if price %}
-        <div class="highlight-price mb-3" data-aos="flip-up" data-aos-delay="300">
+        <div class="highlight-price" data-aos="flip-up" data-aos-delay="300">
           Rp <span id="low">0</span> - Rp <span id="high">0</span>
         </div>
-        <p class="text-muted" style="font-size: 0.85rem;" data-aos="fade" data-aos-delay="500">
+        <p class="text-muted" style="font-size: 0.9rem;" data-aos="fade" data-aos-delay="500">
           Ini adalah estimasi harga jual berdasarkan data yang Anda berikan.
         </p>
       {% else %}
@@ -126,9 +141,7 @@
 
   <!-- AOS animation -->
   <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
-  <script>
-    AOS.init();
-  </script>
+  <script>AOS.init();</script>
 
   {% if price %}
   <script>
@@ -143,8 +156,8 @@
 
       let lowNow = 0;
       let highNow = 0;
-
       const speed = 15;
+
       const lowStep = Math.max(1, Math.floor(lowTarget / 100));
       const highStep = Math.max(1, Math.floor(highTarget / 100));
 

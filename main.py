@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, render_template, request, redirect, url_for, session, jsonify
 import random
 import skops.io as sio
 import pandas as pd
@@ -26,7 +26,7 @@ def predict():
     seller_type = request.form.get('seller_type')
     transmission = request.form.get('transmission')
     owner = request.form.get('owner')
-    mileage = request.form.get('mileage')
+    mileage = request.form.get('rasioBahanBakar')
     engine = request.form.get('engine')
     max_power = request.form.get('max_power')
     torque = request.form.get('torque')

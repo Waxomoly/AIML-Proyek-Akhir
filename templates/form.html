@@ -111,7 +111,7 @@
         <div class="mb-3">
           <label class="form-label">Nama Brand</label>
           <div class="dropdown w-100">
-            <button type="button" class="btn btn-custom-light w-100" id="torqueDropdownButton">Pilih Brand</button>
+            <button type="button" class="btn btn-custom-light w-100" id="brandDropdownButton">Pilih Brand</button>
             <div id="brandDropdown" class="dropdown-content">
               <input type="text" placeholder="Cari brand..." id="brandInput" class="dropdown-input" onkeyup="filterDropdown('brandInput', 'brandDropdown')">
               {% for b in ['Tidak Terdaftar / Tidak Diketahui', 'Maruti', 'Skoda', 'Honda', 'Hyundai', 'Toyota', 'Ford', 'Renault', 'Mahindra', 'Tata', 'Chevrolet', 'Datsun', 'Jeep', 'Mercedes-Benz', 'Audi', 'Volkswagen', 'BMW', 'Nissan', 'Fiat'] %}
@@ -119,8 +119,9 @@
               {% endfor %}
             </div>
           </div>
-          <input type="hidden" name="brand" id="selectedBrand">
+          <input type="hidden" name="brand" id="selectedBrand" required>
         </div>
+
         
         <!-- USIA MOBIL -->
         <div class="mb-3">
@@ -215,54 +216,62 @@
   </div>
 
   <script>
-    document.addEventListener("DOMContentLoaded", function () {
-      function setupDropdown(buttonId, dropdownId, inputId) {
-        const button = document.getElementById(buttonId);
-        const dropdown = document.getElementById(dropdownId);
-        const input = document.getElementById(inputId);
+  // Fungsi umum untuk filter isi dropdown
+  function filterDropdown(inputId, dropdownId) {
+    let input = document.getElementById(inputId);
+    let filter = input.value.toUpperCase();
+    let dropdown = document.getElementById(dropdownId);
+    let items = dropdown.getElementsByTagName("a");
+    for (let i = 0; i < items.length; i++) {
+      let txtValue = items[i].textContent || items[i].innerText;
+      items[i].style.display = txtValue.toUpperCase().includes(filter) ? "" : "none";
+    }
+  }
 
-        button.addEventListener("click", function (e) {
-          e.stopPropagation();
-          dropdown.classList.toggle("show");
-          input.focus();
-        });
+  // Fungsi umum untuk pilih item dropdown
+  function selectDropdown(hiddenInputId, buttonId, value, dropdownId) {
+    document.getElementById(hiddenInputId).value = value;
+    document.getElementById(buttonId).textContent = value;
+    document.getElementById(dropdownId).classList.remove("show");
+  }
 
-        window.addEventListener("click", function (e) {
-          if (!dropdown.contains(e.target) && !button.contains(e.target)) {
-            dropdown.classList.remove("show");
-          }
-        });
-      }
+  // Toggle dropdown saat tombol diklik
+  document.addEventListener("DOMContentLoaded", function () {
+    const dropdowns = [
+      { buttonId: "brandDropdownButton", dropdownId: "brandDropdown", inputId: "brandInput" },
+      { buttonId: "torqueDropdownButton", dropdownId: "torqueDropdown", inputId: "torqueInput" }
+    ];
 
-      setupDropdown("torqueDropdownButton", "torqueDropdown", "torqueInput");
-      setupDropdown("brandDropdownButton", "brandDropdown", "brandInput");
+    dropdowns.forEach(d => {
+      const btn = document.getElementById(d.buttonId);
+      const dropdown = document.getElementById(d.dropdownId);
+      const input = document.getElementById(d.inputId);
+
+      btn.addEventListener("click", function (e) {
+        e.stopPropagation();
+        dropdown.classList.toggle("show");
+        input.focus();
+      });
     });
 
-    function selectDropdown(hiddenInputId, buttonId, value, dropdownId) {
-      document.getElementById(hiddenInputId).value = value;
-      document.getElementById(buttonId).textContent = value;
-      document.getElementById(dropdownId).classList.remove("show");
-    }
-
-    function filterDropdown(inputId, dropdownId) {
-      let input = document.getElementById(inputId);
-      let filter = input.value.toUpperCase();
-      let dropdown = document.getElementById(dropdownId);
-      let items = dropdown.getElementsByTagName("a");
-      for (let i = 0; i < items.length; i++) {
-        let txtValue = items[i].textContent || items[i].innerText;
-        items[i].style.display = txtValue.toUpperCase().includes(filter) ? "" : "none";
-      }
-    }
-
-    document.querySelector("form").addEventListener("submit", function(e) {
-      const torque = document.getElementById("selectedTorque").value;
-      const brand = document.getElementById("selectedBrand").value;
-      if (!torque || !brand) {
-        e.preventDefault();
-        alert("Mohon pilih Brand dan Torque terlebih dahulu.");
-      }
+    // Tutup semua dropdown jika klik di luar
+    window.addEventListener("click", function () {
+      document.querySelectorAll(".dropdown-content").forEach(d => d.classList.remove("show"));
     });
-  </script>
+  });
+
+  // Cek sebelum submit
+  document.querySelector("form").addEventListener("submit", function(e) {
+    if (!document.getElementById("selectedTorque").value) {
+      e.preventDefault();
+      alert("Mohon pilih nilai Torque terlebih dahulu.");
+    }
+    if (!document.getElementById("selectedBrand").value) {
+      e.preventDefault();
+      alert("Mohon pilih Brand terlebih dahulu.");
+    }
+  });
+</script>
+
 </body>
 </html>

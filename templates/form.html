@@ -4,11 +4,9 @@
   <meta charset="UTF-8">
   <title>Form Prediksi Harga Mobil</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-
-  <!-- Bootstrap -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   
-  <!-- Select2 CSS -->
+  <!-- Bootstrap & Select2 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
   <style>
@@ -50,15 +48,6 @@
       border-color: #146aad;
     }
 
-    /* Tambah ikon 🔍 di input search dalam dropdown */
-    .select2-container .select2-search--dropdown .select2-search__field {
-      padding-left: 2rem;
-      background: url('data:image/svg+xml;utf8,<svg fill="gray" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C8.01 14 6 11.99 6 9.5S8.01 5 10.5 5 15 7.01 15 9.5 12.99 14 10.5 14z"/></svg>') 
-      no-repeat 6px center;
-      background-size: 16px;
-    }
-
-    /* Styling Select2 biar selaras dengan Bootstrap */
     .select2-container--default .select2-selection--single {
       height: 38px;
       padding: 6px 12px;
@@ -74,6 +63,14 @@
       height: 36px;
       right: 10px;
     }
+
+    .select2-container.border-danger .select2-selection {
+      border: 1px solid red !important;
+    }
+
+    .is-invalid {
+      border-color: red !important;
+    }
   </style>
 </head>
 <body>
@@ -82,8 +79,8 @@
   <div class="form-wrapper">
     <div class="form-container">
       <h2 class="mb-4">Prediksi Harga Mobil</h2>
-      <form method="POST" action="{{ url_for('predict') }}">
-
+      <form method="POST" action="{{ url_for('predict') }}" id="predictForm">
+        
         <!-- BRAND -->
         <div class="mb-3">
           <label for="brandSelect" class="form-label">Nama Brand</label>
@@ -111,11 +108,11 @@
         <div class="mb-3">
           <label class="form-label">Jenis Bahan Bakar</label>
           <select name="fuel" class="form-select" required>
-            <option disabled selected>-- Pilih Jenis Bahan Bakar --</option>
-            <option>Diesel</option>
-            <option>Petrol</option>
-            <option>LPG</option>
-            <option>CNG</option>
+            <option value="" disabled selected>-- Pilih Jenis Bahan Bakar --</option>
+            <option value="Diesel">Diesel</option>
+            <option value="Petrol">Petrol</option>
+            <option value="LPG">LPG</option>
+            <option value="CNG">CNG</option>
           </select>
         </div>
 
@@ -123,10 +120,10 @@
         <div class="mb-3">
           <label class="form-label">Jenis Penjual</label>
           <select name="seller_type" class="form-select" required>
-            <option disabled selected>-- Pilih Jenis Penjual --</option>
-            <option>Individual</option>
-            <option>Dealer</option>
-            <option>Trustmark Dealer</option>
+            <option value="" disabled selected>-- Pilih Jenis Penjual --</option>
+            <option value="Individual">Individual</option>
+            <option value="Dealer">Dealer</option>
+            <option value="Trustmark Dealer">Trustmark Dealer</option>
           </select>
         </div>
 
@@ -134,9 +131,9 @@
         <div class="mb-3">
           <label class="form-label">Transmisi</label>
           <select name="transmission" class="form-select" required>
-            <option disabled selected>-- Pilih Transmisi --</option>
-            <option>Manual</option>
-            <option>Automatic</option>
+            <option value="" disabled selected>-- Pilih Transmisi --</option>
+            <option value="Manual">Manual</option>
+            <option value="Automatic">Automatic</option>
           </select>
         </div>
 
@@ -144,20 +141,20 @@
         <div class="mb-3">
           <label class="form-label">Tipe Pemilik</label>
           <select name="owner" class="form-select" required>
-            <option disabled selected>-- Pilih Pemilik --</option>
-            <option>Tidak Diketahui</option>
-            <option>First Owner</option>
-            <option>Second Owner</option>
-            <option>Third Owner</option>
-            <option>Fourth & Above Owner</option>
-            <option>Test Drive Car</option>
+            <option value="" disabled selected>-- Pilih Pemilik --</option>
+            <option value="Tidak Diketahui">Tidak Diketahui</option>
+            <option value="First Owner">First Owner</option>
+            <option value="Second Owner">Second Owner</option>
+            <option value="Third Owner">Third Owner</option>
+            <option value="Fourth & Above Owner">Fourth & Above Owner</option>
+            <option value="Test Drive Car">Test Drive Car</option>
           </select>
         </div>
 
         <!-- RASIO BAHAN BAKAR -->
         <div class="mb-3">
           <label class="form-label">Rasio Bahan Bakar (dalam desimal Km/L)</label>
-          <input type="float" name="rasioBahanBakar" class="form-control" placeholder="Contoh: 2.5" required>
+          <input type="number" step="0.1" name="rasioBahanBakar" class="form-control" placeholder="Contoh: 2.5" required>
         </div>
 
         <!-- KAPASITAS MESIN -->
@@ -183,6 +180,7 @@
           </select>
         </div>
 
+        <!-- BUTTON -->
         <div class="d-flex justify-content-between form-buttons">
           <a href="{{ url_for('hero') }}" class="btn btn-outline-secondary">← Kembali</a>
           <button type="submit" class="btn btn-success">Prediksi Harga</button>
@@ -191,21 +189,45 @@
     </div>
   </div>
 
-  <!-- JQuery + Select2 -->
+  <!-- JS Select2 & JQuery -->
   <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
   <script>
     $(document).ready(function () {
-      $('#brandSelect').select2({
-        placeholder: "Cari atau pilih Brand",
-        allowClear: true
+      $('#brandSelect, #torqueSelect').select2({
+        placeholder: "Pilih atau cari",
+        allowClear: true,
+        width: '100%'
+      });
+    });
+
+    // Validasi manual
+    document.getElementById("predictForm").addEventListener("submit", function (e) {
+      let isValid = true;
+      ['brandSelect', 'torqueSelect'].forEach(function (id) {
+        const select = document.getElementById(id);
+        if (!select.value) {
+          isValid = false;
+          $('#' + id).next('.select2-container').addClass("border-danger");
+        } else {
+          $('#' + id).next('.select2-container').removeClass("border-danger");
+        }
       });
 
-      $('#torqueSelect').select2({
-        placeholder: "Cari atau pilih Torsi",
-        allowClear: true
+      document.querySelectorAll("select.form-select:not(.select2-hidden-accessible)").forEach(sel => {
+        if (!sel.value) {
+          isValid = false;
+          sel.classList.add("is-invalid");
+        } else {
+          sel.classList.remove("is-invalid");
+        }
       });
+
+      if (!isValid) {
+        e.preventDefault();
+        alert("Mohon lengkapi semua field yang wajib diisi.");
+      }
     });
   </script>
 </body>

@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Prediksi Harga Mobil</title>
   <style>
     * {
@@ -10,11 +10,13 @@
       padding: 0;
       box-sizing: border-box;
     }
+
     html, body {
       height: 100%;
       width: 100%;
       font-family: sans-serif;
     }
+
     .hero {
       position: relative;
       width: 100%;
@@ -26,14 +28,16 @@
       align-items: center;
       text-align: center;
     }
+
     .hero-background {
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      z-index: -1;
+      z-index: -2;
     }
+
     .hero-background img {
       position: absolute;
       inset: 0;
@@ -43,9 +47,11 @@
       opacity: 0;
       transition: opacity 1s ease-in-out;
     }
+
     .hero-background img.active {
       opacity: 1;
     }
+
     .hero-content {
       width: 90%;
       max-width: 800px;
@@ -54,16 +60,19 @@
       border-radius: 12px;
       box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
     }
+
     .hero h1 {
       font-size: 2.5rem;
       margin-bottom: 1rem;
     }
+
     .hero p {
       font-size: 1.2rem;
       margin-bottom: 2rem;
     }
+
     .btn {
-      background-color: #28a745;
+      background: linear-gradient(to right, #1167b1, #218838);
       padding: 12px 24px;
       color: white;
       font-size: 1rem;
@@ -71,10 +80,14 @@
       border-radius: 8px;
       cursor: pointer;
       text-decoration: none;
+      transition: transform 0.2s, box-shadow 0.2s;
     }
+
     .btn:hover {
-      background-color: #218838;
+      transform: scale(1.05);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
     }
+
     @media (max-width: 600px) {
       .hero h1 { font-size: 1.5rem; }
       .hero p { font-size: 0.95rem; }
@@ -87,10 +100,9 @@
   {% include 'layouts/navbar.html' %}
   <div class="hero">
     <div class="hero-background">
-      <img src="{{ url_for('static', filename='images/mobil1.jpg') }}" class="bg-image active" alt="Mobil">
-      <img src="{{ url_for('static', filename='images/foto4.jpg') }}" class="bg-image" alt="Mobil">
-      <img src="{{ url_for('static', filename='images/mobil2.jpg') }}" class="bg-image" alt="Mobil">
-      <img src="{{ url_for('static', filename='images/foto5.jpg') }}" class="bg-image" alt="Mobil">
+      <img src="{{ url_for('static', filename='images/mobil5.jpg') }}" class="bg-image active" alt="Mobil">
+      <img src="{{ url_for('static', filename='images/foto6.jpg') }}" class="bg-image" alt="Mobil">
+      <img src="{{ url_for('static', filename='images/mobil4.jpg') }}" class="bg-image" alt="Mobil">
     </div>
     <div class="hero-content">
       <h1>Lagi Bingung Cari Harga Mobil yang Pas?</h1>
@@ -109,4 +121,3 @@
   </script>
 </body>
 </html>
-

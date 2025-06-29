@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
@@ -8,8 +8,11 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" defer></script>
 
     <style>
-        body {
-            background: linear-gradient(to right, #e0f7e9, #d0f0c0);
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to bottom, #6d8cd4, #9ebaf5); 
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
@@ -18,23 +21,30 @@
             padding: 40px;
             background-color: white;
             border-radius: 15px;
-            box-shadow: 0 0 25px rgba(0, 128, 0, 0.2);
+            box-shadow: 0 0 25px rgba(24, 123, 205, 0.2);
         }
 
         .highlight-price {
             font-size: 3rem;
             font-weight: bold;
-            color: #2e7d32;
+            color: #187bcd;
         }
 
-        .badge-announcement {
-            font-size: 1.2rem;
-            background-color: #4caf50;
-            color: white;
-            padding: 8px 20px;
-            border-radius: 20px;
+        .announcement-text {
+            font-size: 1.6rem;
+            font-weight: bold;
+            color: #187bcd;
             margin-bottom: 20px;
-            display: inline-block;
+        }
+
+        .btn-success {
+            background-color: #187bcd;
+            border-color: #187bcd;
+        }
+
+        .btn-success:hover {
+            background-color: #146aad;
+            border-color: #146aad;
         }
     </style>
 </head>
@@ -43,7 +53,7 @@
 
     <div class="container d-flex justify-content-center align-items-center">
         <div class="result-container text-center" data-aos="fade-up" data-aos-duration="1200">
-            <div>Hasil Prediksi Telah Dihitung!</div>
+            <div class="announcement-text">Hasil Prediksi Telah Dihitung!</div>
             <h2 class="mb-4" data-aos="zoom-in" data-aos-delay="200">Perkiraan Harga Jual Mobil Anda</h2>
 
             {% if price %}
@@ -88,6 +98,5 @@
         });
     </script>
     {% endif %}
-
 </body>
 </html>

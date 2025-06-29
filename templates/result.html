@@ -134,8 +134,9 @@
   <script>
     document.addEventListener("DOMContentLoaded", function () {
       const target = {{ price|tojson }};
-      const lowTarget = Math.floor(target * 0.9);
-      const highTarget = Math.ceil(target * 1.1);
+      const mae = {{ mae|tojson }};
+      const lowTarget = target - mae;
+      const highTarget = target + mae;
 
       const lowEl = document.getElementById("low");
       const highEl = document.getElementById("high");

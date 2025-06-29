@@ -1,5 +1,8 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 import random
+import skops.io as sio
+import pandas as pd
+import numpy as np
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key_here'  # penting untuk session
@@ -27,19 +30,58 @@ def predict():
     engine = request.form.get('engine')
     max_power = request.form.get('max_power')
     torque = request.form.get('torque')
+    seats = request.form.get('seats')
     age = request.form.get('age')
 
-    
-    predicted_price = random.randint(200000, 2000000)
+
+    data_to_predict = pd.DataFrame({
+        'brand': [brand],            # String    
+        'km_driven': [km_driven],    # Integer
+        'fuel': [fuel],              # String
+        'seller_type': [seller_type],  # String
+        'transmission': [transmission],     # String
+        'owner': [owner],                 # String
+        'mileage': [mileage],              # Float 
+        'engine': [engine],             # Float 
+        'max_power': [max_power],           # Float 
+        'torque': [torque],                 # Float
+        'seats': [seats],                   # Integer
+        'age' : [age]                    # Float
+    })
+
+
+
+    model_filename = 'car_price_prediction_model.skops'
+
+    try:
+        loaded_model_pipeline = sio.load(model_filename, trusted=['sklearn.compose._column_transformer._RemainderColsList', 'xgboost.core.Booster', 'xgboost.sklearn.XGBRegressor'])
+        print(f"Model '{model_filename}' loaded successfully!")
+    except FileNotFoundError:
+        print(f"Error: The file '{model_filename}' was not found.")
+        print("Please ensure the .skops file is in the same directory as this script, or provide its full path.")
+        exit()
+
+    y_pred_log = loaded_model_pipeline.predict(data_to_predict)
+    predicted_price = np.expm1(y_pred_log)
+
+    rupees_to_rupiah_rate = 189.91
+
+
 
     # Simpan hasil ke session untuk ditampilkan di /result
-    session['predicted_price'] = predicted_price
+    session['predicted_price'] = float(predicted_price[0]) * rupees_to_rupiah_rate
     return redirect(url_for('result'))
 
 @app.route('/result')
 def result():
     price = session.get('predicted_price', None)
     return render_template('result.html', price=price)
+
+
+
+    
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)

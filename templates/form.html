@@ -1,4 +1,4 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -8,7 +8,7 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" defer></script>
   <style>
     body {
-      background: linear-gradient(to bottom, #6d8cd4, #9ebaf5); 
+      background: linear-gradient(to bottom, #9ab0f6, #9ebaf5); 
       min-height: 100vh;
       margin: 0;
     }
@@ -35,7 +35,6 @@
       font-weight: bold; 
     }
 
-
     .btn-success {
       background-color: #187bcd;
       border-color: #187bcd;
@@ -56,19 +55,50 @@
       color: white;
       border-color: #187bcd;
     }
+    .btn-custom-light {
+      background-color: #4c549c;
+      color: white;
+    }
+    .btn-custom-light:hover {
+      background-color: #737BA5;
+      color: white;
+    }
 
-    @media (max-width: 576px) {
-      .form-buttons {
-        flex-direction: column;
-        gap: 10px;
-      }
-      .form-buttons .btn {
-        width: 100%;
-        font-size: 0.9rem;
-        padding: 10px;
-      }
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      background-color: #f6f6f6;
+      min-width: 100%;
+      max-height: 200px;
+      overflow-y: auto;
+      border: 1px solid #ddd;
+      z-index: 1;
+    }
+
+    .dropdown-content a {
+      color: black;
+      padding: 8px 12px;
+      text-decoration: none;
+      display: block;
+    }
+
+    .dropdown a:hover {background-color: #ddd;}
+
+    .show {display: block;}
+
+    .dropdown-input {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 5px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    .dropdown {
+      position: relative;
     }
   </style>
+
 </head>
 <body>
   {% include 'layouts/navbar.html' %}
@@ -77,80 +107,162 @@
       <h2 class="mb-4">Prediksi Harga Mobil</h2>
       <form method="POST" action="{{ url_for('predict') }}">
 
-
+        <!-- BRAND -->
         <div class="mb-3">
-          <!-- numeric -->
-          <label class="form-label">Usia Mobil</label> 
-          <input type="number" name="year" class="form-control" placeholder="Isi dengan - apabila tidak diketahui" required>
+          <label class="form-label">Nama Brand</label>
+          <div class="dropdown w-100">
+            <button type="button" class="btn btn-custom-light w-100" id="torqueDropdownButton">Pilih Brand</button>
+            <div id="brandDropdown" class="dropdown-content">
+              <input type="text" placeholder="Cari brand..." id="brandInput" class="dropdown-input" onkeyup="filterDropdown('brandInput', 'brandDropdown')">
+              {% for b in ['Tidak Terdaftar / Tidak Diketahui', 'Maruti', 'Skoda', 'Honda', 'Hyundai', 'Toyota', 'Ford', 'Renault', 'Mahindra', 'Tata', 'Chevrolet', 'Datsun', 'Jeep', 'Mercedes-Benz', 'Audi', 'Volkswagen', 'BMW', 'Nissan', 'Fiat'] %}
+                <a href="#" onclick="selectDropdown('selectedBrand', 'brandDropdownButton', '{{ b }}', 'brandDropdown')">{{ b }}</a>
+              {% endfor %}
+            </div>
+          </div>
+          <input type="hidden" name="brand" id="selectedBrand">
         </div>
-
+        
+        <!-- USIA MOBIL -->
         <div class="mb-3">
-          <!-- numeric -->
-          <label class="form-label">Jarak Tempuh</label>
-          <input type="number" name="km_driven" class="form-control" placeholder="Cth: 20000 km" required>
+          <label class="form-label">Usia Mobil (tahun)</label>
+          <input type="number" name="age" class="form-control" placeholder="Contoh: 5" required>
         </div>
-
+        <!-- KM DRIVEN -->
         <div class="mb-3">
-          <label class="form-label">Kategori Brand</label>
-          <select name="fuel" class="form-select" required>
-            <option value="" disabled selected>-- Pilih Kategori Brand --</option>
-            <option>Affordable</option>
-            <option>Standard</option>
-            <option>Luxury</option>
-          </select>
+          <label class="form-label">Km driven (km)</label>
+          <input type="number" name="km_driven" class="form-control" placeholder="Contoh: 2000" required>
         </div>
-
-        <div class="mb-3">
-          <label class="form-label">Transmisi</label>
-          <select name="transmission" class="form-select" required>
-            <option value="" disabled selected>-- Pilih Transmisi --</option>
-            <option>Automatic</option>
-            <option>Manual</option>
-          </select>
-        </div>
-
+        <!-- BAHAN BAKAR -->
         <div class="mb-3">
           <label class="form-label">Jenis Bahan Bakar</label>
           <select name="fuel" class="form-select" required>
-            <option value="" disabled selected>-- Pilih Bahan Bakar --</option>
-            <option>Petrol</option>
+            <option disabled selected>-- Pilih Jenis Bahan Bakar --</option>
             <option>Diesel</option>
-            <option>CNG</option>
+            <option>Petrol</option>
             <option>LPG</option>
-            <option>Electric</option>
+            <option>CNG</option>
           </select>
         </div>
-
-
+        <!-- JENIS PENJUAL -->
         <div class="mb-3">
           <label class="form-label">Jenis Penjual</label>
           <select name="seller_type" class="form-select" required>
-            <option value="" disabled selected>-- Pilih Jenis Penjual --</option>
-            <option>Dealer</option>
+            <option disabled selected>-- Pilih Jenis Penjual --</option>
             <option>Individual</option>
+            <option>Dealer</option>
             <option>Trustmark Dealer</option>
           </select>
         </div>
-
-        <div class="mb-4">
+        <!-- TRANSMISI -->
+        <div class="mb-3">
+          <label class="form-label">Transmisi</label>
+          <select name="transmission" class="form-select" required>
+            <option disabled selected>-- Pilih Transmisi --</option>
+            <option>Manual</option>
+            <option>Automatic</option>
+          </select>
+        </div>
+        <!-- OWNER -->
+        <div class="mb-3">
           <label class="form-label">Pemilik Sebelumnya</label>
           <select name="owner" class="form-select" required>
-            <option value="" disabled selected>-- Pilih Pemilik Sebelumnya --</option>
+            <option disabled selected>-- Pilih Pemilik --</option>
             <option>First Owner</option>
             <option>Second Owner</option>
             <option>Third Owner</option>
             <option>Fourth & Above Owner</option>
             <option>Test Drive Car</option>
-            <option>Tidak diketahui</option>
           </select>
         </div>
-        
+        <!-- RASIO BAHAN BAKAR -->
+        <div class="mb-3">
+          <label class="form-label">Rasio Bahan Bakar (dalam desimal Km/L)</label>
+          <input type="float" name="rasioBahanBakar" class="form-control" placeholder="Contoh: 2,5" required>
+        </div>
+        <!-- KAPASITAS MESIN -->
+        <div class="mb-3">
+          <label class="form-label">Kapasitas Mesin (CC)</label>
+          <input type="number" name="engine" class="form-control" placeholder="Contoh: 150" required>
+        </div>
+        <!-- HORSEPOWER -->
+        <div class="mb-3">
+          <label class="form-label">Horsepower (bhp)</label>
+          <input type="number" step="0.1" name="max_power" class="form-control" placeholder="Contoh: 200" required>
+        </div>
+        <!-- TORSI -->
+        <div class="mb-3">
+          <label class="form-label">Torsi</label>
+          <div class="dropdown w-100">
+           <button type="button" class="btn btn-custom-light w-100" id="torqueDropdownButton">Pilih Torque</button>
+
+            <div id="torqueDropdown" class="dropdown-content">
+              <input type="text" placeholder="Cari torque..." id="torqueInput" class="dropdown-input" onkeyup="filterDropdown('torqueInput', 'torqueDropdown')">
+              {% for t in torque_list %}
+                <a href="#" onclick="selectDropdown('selectedTorque', 'torqueDropdownButton', '{{ t }}', 'torqueDropdown')">{{ t }}</a>
+              {% endfor %}
+            </div>
+          </div>
+          <input type="hidden" name="torque" id="selectedTorque">
+        </div>
+
         <div class="d-flex justify-content-between form-buttons">
-          <button type="submit" class="btn btn-success">Prediksi Harga</button>
+    
           <a href="{{ url_for('hero') }}" class="btn btn-outline-secondary">← Kembali</a>
+          <button type="submit" class="btn btn-success">Prediksi Harga</button>
         </div>
       </form>
     </div>
   </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      function setupDropdown(buttonId, dropdownId, inputId) {
+        const button = document.getElementById(buttonId);
+        const dropdown = document.getElementById(dropdownId);
+        const input = document.getElementById(inputId);
+
+        button.addEventListener("click", function (e) {
+          e.stopPropagation();
+          dropdown.classList.toggle("show");
+          input.focus();
+        });
+
+        window.addEventListener("click", function (e) {
+          if (!dropdown.contains(e.target) && !button.contains(e.target)) {
+            dropdown.classList.remove("show");
+          }
+        });
+      }
+
+      setupDropdown("torqueDropdownButton", "torqueDropdown", "torqueInput");
+      setupDropdown("brandDropdownButton", "brandDropdown", "brandInput");
+    });
+
+    function selectDropdown(hiddenInputId, buttonId, value, dropdownId) {
+      document.getElementById(hiddenInputId).value = value;
+      document.getElementById(buttonId).textContent = value;
+      document.getElementById(dropdownId).classList.remove("show");
+    }
+
+    function filterDropdown(inputId, dropdownId) {
+      let input = document.getElementById(inputId);
+      let filter = input.value.toUpperCase();
+      let dropdown = document.getElementById(dropdownId);
+      let items = dropdown.getElementsByTagName("a");
+      for (let i = 0; i < items.length; i++) {
+        let txtValue = items[i].textContent || items[i].innerText;
+        items[i].style.display = txtValue.toUpperCase().includes(filter) ? "" : "none";
+      }
+    }
+
+    document.querySelector("form").addEventListener("submit", function(e) {
+      const torque = document.getElementById("selectedTorque").value;
+      const brand = document.getElementById("selectedBrand").value;
+      if (!torque || !brand) {
+        e.preventDefault();
+        alert("Mohon pilih Brand dan Torque terlebih dahulu.");
+      }
+    });
+  </script>
 </body>
 </html>

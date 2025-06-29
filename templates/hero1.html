@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Prediksi Harga Mobil</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" defer></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { height: 100%; width: 100%; font-family: sans-serif; scroll-behavior: smooth; }
+
+    .hero {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      overflow: hidden;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+    .hero-background {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%; z-index: -2;
+    }
+    .hero-background img {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%; object-fit: cover;
+      opacity: 0; transition: opacity 1s ease-in-out;
+    }
+    .hero-background img.active { opacity: 1; }
+    .hero-content {
+      width: 90%; max-width: 800px; padding: 1.5rem;
+      background-color: rgba(0, 0, 0, 0.5);
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    }
+    .hero h1 { font-size: 2.5rem; margin-bottom: 1rem; }
+    .hero p { font-size: 1.2rem; margin-bottom: 2rem; }
+    .btn {
+      background: linear-gradient(to right, #1167b1, #218838);
+      padding: 12px 24px;
+      color: white;
+      font-size: 1rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+    .form-wrapper {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 60px 15px;
+      background: linear-gradient(to bottom, #9ab0f6, #9ebaf5);
+    }
+    .form-container {
+      background-color: white;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 0 20px rgba(24, 123, 205, 0.2);
+      width: 100%;
+      max-width: 800px;
+    }
+    h2 {
+      color: #187bcd;
+      text-align: center;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  {% include 'layouts/navbar.html' %}
+
+  <div class="hero">
+    <div class="hero-background">
+      <img src="{{ url_for('static', filename='images/mobil5.jpg') }}" class="bg-image active" alt="Mobil">
+      <img src="{{ url_for('static', filename='images/foto6.jpg') }}" class="bg-image" alt="Mobil">
+      <img src="{{ url_for('static', filename='images/mobil4.jpg') }}" class="bg-image" alt="Mobil">
+    </div>
+    <div class="hero-content">
+      <h1>Lagi Bingung Cari Harga Mobil yang Pas?</h1>
+      <p>Tenang, sekarang kamu bisa tahu perkiraan harga mobil favorit dengan cepat dan mudah.</p>
+      <a href="#formSection" class="btn">Cek Harga Sekarang</a>
+    </div>
+  </div>
+
+  <div id="formSection" class="form-wrapper">
+    <div class="form-container">
+      <h2 class="mb-4">Prediksi Harga Mobil</h2>
+      <form method="POST" action="{{ url_for('predict') }}">
+        
+        <!-- BRAND -->
+        <div class="mb-3">
+          <label class="form-label">Nama Brand</label>
+          <div class="dropdown w-100">
+            <button type="button" class="btn btn-custom-light w-100" id="brandDropdownButton">Pilih Brand</button>
+            <div id="brandDropdown" class="dropdown-content">
+              <input type="text" placeholder="Cari brand..." id="brandInput" class="dropdown-input" onkeyup="filterDropdown('brandInput', 'brandDropdown')">
+              {% for b in ['Tidak Terdaftar / Tidak Diketahui', 'Maruti', 'Skoda', 'Honda', 'Hyundai', 'Toyota', 'Ford', 'Renault', 'Mahindra', 'Tata', 'Chevrolet', 'Datsun', 'Jeep', 'Mercedes-Benz', 'Audi', 'Volkswagen', 'BMW', 'Nissan', 'Fiat'] %}
+                <a href="#" onclick="selectDropdown('selectedBrand', 'brandDropdownButton', '{{ b }}', 'brandDropdown')">{{ b }}</a>
+              {% endfor %}
+            </div>
+          </div>
+          <input type="hidden" name="brand" id="selectedBrand" required>
+        </div>
+        
+        <div class="mb-3">
+          <label class="form-label">Usia Mobil (tahun)</label>
+          <input type="number" name="age" class="form-control" placeholder="Contoh: 5" required>
+        </div>
+        
+        <!-- KM DRIVEN -->
+        <div class="mb-3">
+          <label class="form-label">Km driven (km)</label>
+          <input type="number" name="km_driven" class="form-control" placeholder="Contoh: 2000" required>
+        </div>
+        <!-- BAHAN BAKAR -->
+        <div class="mb-3">
+          <label class="form-label">Jenis Bahan Bakar</label>
+          <select name="fuel" class="form-select" required>
+            <option disabled selected>-- Pilih Jenis Bahan Bakar --</option>
+            <option>Diesel</option>
+            <option>Petrol</option>
+            <option>LPG</option>
+            <option>CNG</option>
+          </select>
+        </div>
+        <!-- JENIS PENJUAL -->
+        <div class="mb-3">
+          <label class="form-label">Jenis Penjual</label>
+          <select name="seller_type" class="form-select" required>
+            <option disabled selected>-- Pilih Jenis Penjual --</option>
+            <option>Individual</option>
+            <option>Dealer</option>
+            <option>Trustmark Dealer</option>
+          </select>
+        </div>
+        <!-- TRANSMISI -->
+        <div class="mb-3">
+          <label class="form-label">Transmisi</label>
+          <select name="transmission" class="form-select" required>
+            <option disabled selected>-- Pilih Transmisi --</option>
+            <option>Manual</option>
+            <option>Automatic</option>
+          </select>
+        </div>
+        <!-- OWNER -->
+        <div class="mb-3">
+          <label class="form-label">Pemilik Sebelumnya</label>
+          <select name="owner" class="form-select" required>
+            <option disabled selected>-- Pilih Pemilik --</option>
+            <option>First Owner</option>
+            <option>Second Owner</option>
+            <option>Third Owner</option>
+            <option>Fourth & Above Owner</option>
+            <option>Test Drive Car</option>
+          </select>
+        </div>
+        <!-- RASIO BAHAN BAKAR -->
+        <div class="mb-3">
+          <label class="form-label">Rasio Bahan Bakar (dalam desimal Km/L)</label>
+          <input type="float" name="rasioBahanBakar" class="form-control" placeholder="Contoh: 2,5" required>
+        </div>
+        <!-- KAPASITAS MESIN -->
+        <div class="mb-3">
+          <label class="form-label">Kapasitas Mesin (CC)</label>
+          <input type="number" name="engine" class="form-control" placeholder="Contoh: 150" required>
+        </div>
+        <!-- HORSEPOWER -->
+        <div class="mb-3">
+          <label class="form-label">Horsepower (bhp)</label>
+          <input type="number" step="0.1" name="max_power" class="form-control" placeholder="Contoh: 200" required>
+        </div>
+        <!-- TORSI -->
+        <div class="mb-3">
+          <label class="form-label">Torsi</label>
+          <div class="dropdown w-100">
+           <button type="button" class="btn btn-custom-light w-100" id="torqueDropdownButton">Pilih Torque</button>
+
+            <div id="torqueDropdown" class="dropdown-content">
+              <input type="text" placeholder="Cari torque..." id="torqueInput" class="dropdown-input" onkeyup="filterDropdown('torqueInput', 'torqueDropdown')">
+              {% for t in torque_list %}
+                <a href="#" onclick="selectDropdown('selectedTorque', 'torqueDropdownButton', '{{ t }}', 'torqueDropdown')">{{ t }}</a>
+              {% endfor %}
+            </div>
+          </div>
+          <input type="hidden" name="torque" id="selectedTorque">
+        </div>
+        <div class="d-flex justify-content-between form-buttons">
+          <a href="{{ url_for('hero') }}" class="btn btn-outline-secondary">← Kembali</a>
+          <button type="submit" class="btn btn-success">Prediksi Harga</button>
+        </div>
+
+        <div class="d-flex justify-content-end">
+          
+          <button type="submit" class="btn btn-success">Prediksi Harga</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const slides = document.querySelectorAll('.hero-background img');
+    let current = 0;
+    setInterval(() => {
+      slides[current].classList.remove('active');
+      current = (current + 1) % slides.length;
+      slides[current].classList.add('active');
+    }, 5000);
+  </script>
+  <script>
+  // Fungsi umum untuk filter isi dropdown
+  function filterDropdown(inputId, dropdownId) {
+    let input = document.getElementById(inputId);
+    let filter = input.value.toUpperCase();
+    let dropdown = document.getElementById(dropdownId);
+    let items = dropdown.getElementsByTagName("a");
+    for (let i = 0; i < items.length; i++) {
+      let txtValue = items[i].textContent || items[i].innerText;
+      items[i].style.display = txtValue.toUpperCase().includes(filter) ? "" : "none";
+    }
+  }
+
+  // Fungsi umum untuk pilih item dropdown
+  function selectDropdown(hiddenInputId, buttonId, value, dropdownId) {
+    document.getElementById(hiddenInputId).value = value;
+    document.getElementById(buttonId).textContent = value;
+    document.getElementById(dropdownId).classList.remove("show");
+  }
+
+  // Toggle dropdown saat tombol diklik
+  document.addEventListener("DOMContentLoaded", function () {
+    const dropdowns = [
+      { buttonId: "brandDropdownButton", dropdownId: "brandDropdown", inputId: "brandInput" },
+      { buttonId: "torqueDropdownButton", dropdownId: "torqueDropdown", inputId: "torqueInput" }
+    ];
+
+    dropdowns.forEach(d => {
+      const btn = document.getElementById(d.buttonId);
+      const dropdown = document.getElementById(d.dropdownId);
+      const input = document.getElementById(d.inputId);
+
+      btn.addEventListener("click", function (e) {
+        e.stopPropagation();
+        dropdown.classList.toggle("show");
+        input.focus();
+      });
+    });
+
+    // Tutup semua dropdown jika klik di luar
+    window.addEventListener("click", function () {
+      document.querySelectorAll(".dropdown-content").forEach(d => d.classList.remove("show"));
+    });
+  });
+
+  // Cek sebelum submit
+  document.querySelector("form").addEventListener("submit", function(e) {
+    if (!document.getElementById("selectedTorque").value) {
+      e.preventDefault();
+      alert("Mohon pilih nilai Torque terlebih dahulu.");
+    }
+    if (!document.getElementById("selectedBrand").value) {
+      e.preventDefault();
+      alert("Mohon pilih Brand terlebih dahulu.");
+    }
+  });
+</script>
+</body>
+</html>

@@ -72,7 +72,7 @@
     }
 
     .btn {
-      background: linear-gradient(to right, #1167b1, #218838);
+      background: linear-gradient(to right, #1167b1, #4c549c);
       padding: 12px 24px;
       color: white;
       font-size: 1rem;
@@ -80,13 +80,25 @@
       border-radius: 8px;
       cursor: pointer;
       text-decoration: none;
-      transition: transform 0.2s, box-shadow 0.2s;
+      transition: transform 0.3s, box-shadow 0.3s, background 0.3s;         
+      margin-bottom: 0.5rem;     
+      display: inline-block;     
     }
 
     .btn:hover {
       transform: scale(1.05);
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+      background: linear-gradient(to right, #0e4d8a, #1a6c2a); /* Warna hover lebih gelap */
     }
+
+    .btn-success:hover {
+            background: #4c549c;
+            border-color: #1a8cff;
+            transform: translateY(-2px) scale(1.03);
+            box-shadow: 0 6px 18px rgba(24, 123, 205, 0.4);
+            color: white;
+    }
+
 
     @media (max-width: 600px) {
       .hero h1 { font-size: 1.5rem; }

@@ -70,7 +70,7 @@ def predict():
 
     # Simpan hasil ke session untuk ditampilkan di /result
     session['predicted_price'] = float(predicted_price[0]) * rupees_to_rupiah_rate
-    session['mae'] = 61549.3809
+    session['mae'] = 61549.3809 * rupees_to_rupiah_rate
     return redirect(url_for('result'))
 
 @app.route('/result')
